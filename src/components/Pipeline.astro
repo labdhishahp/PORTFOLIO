@@ -1,0 +1,47 @@
+---
+// A system drawn as its stages. "model" steps are where an LLM is involved;
+// "check" steps are deterministic code (or a person) deciding.
+interface Props {
+  steps: { step: string; kind: "model" | "check" | "step"; note?: string }[];
+  caption?: string;
+}
+const { steps, caption } = Astro.props;
+const kinds = new Set(steps.map((s) => s.kind));
+---
+
+<figure class="pipeline">
+  <span class="label">The system</span>
+  <div class="legend" aria-hidden="true">
+    {kinds.has("model") && <span><span class="key model"></span>model step</span>}
+    {kinds.has("check") && <span><span class="key check"></span>deterministic check</span>}
+    {kinds.has("step") && <span><span class="key step"></span>plain code</span>}
+  </div>
+  <ol aria-label="Stages, in order">
+    {
+      steps.map((s, i) => (
+        <li class={s.kind}>
+          {i > 0 && <span class="sep" aria-hidden="true">→</span>}
+          <span class="node">
+            <span class="box">
+              {s.step}
+              <span class="visually-hidden">{s.kind === "model" ? " (model step)" : s.kind === "check" ? " (deterministic check)" : ""}</span>
+            </span>
+            {s.note && <span class="note">{s.note}</span>}
+          </span>
+        </li>
+      ))
+    }
+  </ol>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<style>
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+</style>

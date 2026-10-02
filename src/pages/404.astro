@@ -1,0 +1,12 @@
+---
+import Base from "../layouts/Base.astro";
+import { url } from "../site";
+---
+
+<Base title="Not found">
+  <header class="page-head">
+    <span class="label">404</span>
+    <h1>Nothing here.</h1>
+    <p class="lede">This page doesn’t exist. <a href={url("")}>Start from the beginning</a>.</p>
+  </header>
+</Base>

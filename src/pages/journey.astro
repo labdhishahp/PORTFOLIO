@@ -1,0 +1,160 @@
+---
+import Base from "../layouts/Base.astro";
+import { url } from "../site";
+
+const path = [
+  {
+    when: "2023 – present",
+    what: "B.Tech, Artificial Intelligence & Data Science",
+    where: "Thakur College of Engineering and Technology, Mumbai",
+    facts: "Graduating July 2027",
+    meaning:
+      "The foundation: machine learning, data, and the maths underneath them. Most of the work on this site I built alongside the degree.",
+  },
+  {
+    when: "Aug 2024 – Sep 2025",
+    what: "Data Science Club (S4DS)",
+    where: "Thakur College of Engineering and Technology",
+    facts: "Led a 100+ member community · workshops and events with 300+ attendees",
+  },
+  {
+    when: "Dec 2025 – Feb 2026",
+    what: "Software Developer Intern",
+    where: "Miscot Systems, Mumbai · Python team",
+    facts: "OCR pipelines · Aadhaar masking · FastAPI services",
+    meaning:
+      "My first time inside a real software team. Building an AI feature turned out to be mostly everything around the model: preprocessing, validation, APIs, error handling and security.",
+    more: { href: "work/document-intelligence/", label: "The story" },
+  },
+  {
+    when: "16 – 17 Mar 2026",
+    what: "2nd place, IndiaNext national hackathon",
+    where: "KES’ College, Mumbai · team CarbonHackers",
+    facts: "2nd of 234 teams · ₹20,000 prize · CarbonGrid",
+    meaning: "A working product in 24 hours, with a team of four.",
+    more: { href: "work/carbongrid/", label: "The story" },
+  },
+  {
+    when: "Aug 2026 – now",
+    what: "Building on my own",
+    where: "Knowledge Assistant, then L-Mart",
+    facts: "One system live · one in development",
+    meaning:
+      "Where measuring became part of how I decide: gold sets, A/B comparisons and ablations behind the main design choices.",
+    more: { href: "work/", label: "The work" },
+  },
+];
+
+const principles = [
+  {
+    name: "Measure before claiming",
+    body: "I set the refusal threshold from a 28-question gold set, kept a chunker only because it scored 0.826 against 0.783, and let an ablation overturn a cause I had designed myself.",
+    seen: [
+      { label: "Knowledge Assistant", href: "work/knowledge-assistant/" },
+      { label: "L-Mart", href: "work/l-mart/" },
+    ],
+  },
+  {
+    name: "The model proposes; code and people decide",
+    body: "In L-Mart the model investigates and drafts, but policy code checks the proposal twice and a person approves its exact content. In the Knowledge Assistant, a deterministic gate decides whether the model runs at all.",
+    seen: [
+      { label: "L-Mart", href: "work/l-mart/" },
+      { label: "Knowledge Assistant", href: "work/knowledge-assistant/" },
+    ],
+  },
+  {
+    name: "Fail honestly",
+    body: "Refusing below 0.55 is better than a confident wrong answer. So is reporting an agent’s 14 / 22 instead of hiding it, and naming the model that failed instead of quietly swapping in another.",
+    seen: [
+      { label: "Knowledge Assistant", href: "work/knowledge-assistant/" },
+      { label: "L-Mart", href: "work/l-mart/" },
+    ],
+  },
+  {
+    name: "Most of an AI feature is around the model",
+    body: "At Miscot, the model calls were the small part. Preprocessing, staged detection and recognition, masking and the API around them were most of the work.",
+    seen: [{ label: "Document intelligence", href: "work/document-intelligence/" }],
+  },
+  {
+    name: "Design for the platform you’re on",
+    body: "Serverless limits shaped real decisions: exact NumPy search instead of FAISS, embeddings over an API, and one model turn per request so a long investigation fits a 60-second function.",
+    seen: [
+      { label: "Knowledge Assistant", href: "work/knowledge-assistant/" },
+      { label: "L-Mart", href: "work/l-mart/" },
+    ],
+  },
+];
+---
+
+<Base title="Journey" current="journey" description="Labdhi Shah — the path so far, how I think about engineering, and life outside it.">
+  <header class="page-head">
+    <span class="label">Journey</span>
+    <h1>Learning to build the part after the model call.</h1>
+    <p class="lede">
+      I’m in the final year of a B.Tech in AI &amp; Data Science in Mumbai. This is the path so far,
+      what each step changed, how I’ve come to think about engineering, and a little about life
+      outside it.
+    </p>
+  </header>
+
+  <section aria-labelledby="path">
+    <div class="section-title"><h2 id="path">The path</h2></div>
+    <ol class="path">
+      {
+        path.map((p) => (
+          <li>
+            <span class="when">{p.when}</span>
+            <span class="what">
+              {p.what}
+              <span class="where">{p.where}</span>
+            </span>
+            <span class="facts-line">{p.facts}</span>
+            {p.meaning && <p class="meaning">{p.meaning}</p>}
+            {p.more && (
+              <a class="more" href={url(p.more.href)}>
+                {p.more.label} <span class="arrow" aria-hidden="true">→</span>
+              </a>
+            )}
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <section class="block" aria-labelledby="think">
+    <div class="section-title"><h2 id="think">How I think about engineering</h2></div>
+    <p class="block-intro">Five things my projects keep teaching me, each with the work it came from.</p>
+    <ol class="principles">
+      {
+        principles.map((p) => (
+          <li>
+            <h3>{p.name}</h3>
+            <p>{p.body}</p>
+            <span class="seen">
+              <span class="label">Seen in</span>
+              {p.seen.map((s) => <a href={url(s.href)}>{s.label}</a>)}
+            </span>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <section class="block" aria-labelledby="outside">
+    <div class="section-title"><h2 id="outside">Outside engineering</h2></div>
+    <div class="outside">
+      <p>
+        I like travelling to different places, and exploring restaurants and food wherever I am.
+      </p>
+      <p>I play the keyboard and piano.</p>
+      <p class="wide">
+        I meditate, and prayer is part of my life. They’re where I’ve learned the most about
+        patience, and about making progress honestly instead of quickly. I try to bring that
+        to engineering: not calling something done until I’ve checked that it is.
+      </p>
+    </div>
+    <p class="links" style="margin-top: 2rem;">
+      <a href={url("work/")}>See the work <span class="arrow" aria-hidden="true">→</span></a>
+    </p>
+  </section>
+</Base>

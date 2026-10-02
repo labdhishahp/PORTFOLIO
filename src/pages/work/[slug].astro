@@ -1,0 +1,139 @@
+---
+import { getCollection, render } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import Pipeline from "../../components/Pipeline.astro";
+import Status from "../../components/Status.astro";
+import { url } from "../../site";
+
+export async function getStaticPaths() {
+  const work = (await getCollection("work")).sort((a, b) => a.data.order - b.data.order);
+  return work.map((entry, i) => ({
+    params: { slug: entry.id },
+    props: { entry, next: work[(i + 1) % work.length] },
+  }));
+}
+
+const { entry, next } = Astro.props;
+const { Content } = await render(entry);
+const d = entry.data;
+const split = (s: string) => {
+  const i = s.indexOf(":");
+  return i > 0 && i < 18 ? [s.slice(0, i), s.slice(i + 1).trim()] : [null, s];
+};
+---
+
+<Base title={d.project} description={`${d.title}. ${d.summary}`} current="work">
+  <article>
+    <header class="story-head">
+      <div class="kicker">
+        <Status status={d.status} />
+        <span class="label">{d.project}</span>
+      </div>
+      <h1>{d.title}</h1>
+      <p class="lede">{d.summary}</p>
+    </header>
+
+    <section class="scan" aria-label="Summary">
+      <div class="tldr">
+        <h2 class="label">TL;DR</h2>
+        <ul>
+          {
+            d.tldr.map((t) => {
+              const [k, v] = split(t);
+              return (
+                <li>
+                  {k && <strong>{k}: </strong>}
+                  {v}
+                </li>
+              );
+            })
+          }
+        </ul>
+      </div>
+      <div>
+        {
+          d.metrics.length > 0 ? (
+            <>
+              <h2 class="label">In numbers</h2>
+              <dl class="metrics">
+                {d.metrics.map((m) => (
+                  <div>
+                    <dt>{m.label}</dt>
+                    <dd>{m.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            </>
+          ) : (
+            <>
+              <h2 class="label">At a glance</h2>
+              <p class="proof">{d.proof.map((p) => <span>{p}</span>)}</p>
+            </>
+          )
+        }
+      </div>
+      <dl class="scan-meta">
+        <div><dt class="label">My part</dt><dd>{d.ownership}</dd></div>
+        <div><dt class="label">When</dt><dd>{d.period}</dd></div>
+        <div><dt class="label">Built with</dt><dd class="stack">{d.stack.join(" · ")}</dd></div>
+        <div>
+          <dt class="label">Links</dt>
+          <dd class="links">
+            {d.links.map((l) => <a href={l.href}>{l.label} ↗</a>)}
+            {d.linkNote && <span class="note">{d.linkNote}</span>}
+          </dd>
+        </div>
+      </dl>
+    </section>
+
+    {d.pipeline && <Pipeline steps={d.pipeline} caption={d.pipelineCaption} />}
+
+    {
+      d.decisions.length > 0 && (
+        <section class="glance" aria-labelledby="glance">
+          <div class="section-title">
+            <h2 id="glance">Decisions at a glance</h2>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Decision</th>
+                  <th scope="col">Instead of</th>
+                  <th scope="col">I chose</th>
+                  <th scope="col">Evidence</th>
+                </tr>
+              </thead>
+              <tbody>
+                {d.decisions.map((r) => (
+                  <tr>
+                    <td>{r.decision}</td>
+                    <td>{r.alternatives}</td>
+                    <td>{r.chose}</td>
+                    <td>{r.evidence}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )
+    }
+
+    <section class="deep" aria-labelledby="story">
+      <div class="section-title">
+        <h2 id="story">The full story</h2>
+      </div>
+      <div class="prose">
+        <Content />
+      </div>
+    </section>
+
+    <nav class="story-next" aria-label="More work">
+      <a href={url("work/")}><span class="label">Back</span><span class="t">All work</span></a>
+      <a href={url(`work/${next.id}/`)} style="text-align: right;">
+        <span class="label">Next</span><span class="t">{next.data.project} →</span>
+      </a>
+    </nav>
+  </article>
+</Base>

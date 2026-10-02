@@ -1,0 +1,9 @@
+---
+interface Props {
+  status: "Live" | "In development" | "Internship" | "Hackathon";
+}
+const { status } = Astro.props;
+const cls = status === "Live" ? "badge live" : status === "In development" ? "badge wip" : "badge";
+---
+
+<span class={cls}>{status}</span>

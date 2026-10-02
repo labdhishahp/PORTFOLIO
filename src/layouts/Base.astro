@@ -1,0 +1,73 @@
+---
+import "../styles/global.css";
+import { nav, site, url } from "../site";
+
+interface Props {
+  title?: string;
+  description?: string;
+  current?: "journey" | "work" | "writing";
+}
+
+const { title, description = site.description, current } = Astro.props;
+const pageTitle = title ? `${title} — ${site.name}` : site.name;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href={url("favicon.svg")} type="image/svg+xml" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta name="theme-color" content="#f3f4f2" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#101315" media="(prefers-color-scheme: dark)" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wght@400..700&display=swap"
+    />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <div class="frame">
+      <header class="site-header">
+        <a class="home" href={url("")}>{site.name}</a>
+        <nav aria-label="Primary">
+          <ul>
+            {
+              nav.map((item) => (
+                <li>
+                  <a href={url(item.path)} aria-current={current === item.key ? "page" : undefined}>
+                    {item.label}
+                  </a>
+                </li>
+              ))
+            }
+            <li><a href={url(site.resume)}>Résumé</a></li>
+          </ul>
+        </nav>
+      </header>
+
+      <main id="main">
+        <slot />
+      </main>
+
+      <footer class="site-footer">
+        <span>© {new Date().getFullYear()} {site.name} · Mumbai</span>
+        <ul>
+          <li><a href={site.github}>GitHub</a></li>
+          <li><a href={site.linkedin}>LinkedIn</a></li>
+          <li><a href={`mailto:${site.email}`}>Email</a></li>
+        </ul>
+      </footer>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,69 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import Status from "../../components/Status.astro";
+import { url } from "../../site";
+
+const work = (await getCollection("work")).sort((a, b) => a.data.order - b.data.order);
+---
+
+<Base title="Work" current="work" description="Four systems by Labdhi Shah, each told as the problem and the decisions behind it.">
+  <header class="page-head">
+    <span class="label">Work</span>
+    <h1>Four systems, and the decisions inside them.</h1>
+    <p class="lede">
+      Each one starts with a problem and ends with what I measured. The short version is here; the
+      full story is one click away.
+    </p>
+  </header>
+
+  <ol class="work-list">
+    {
+      work.map((w) => (
+        <li class="work-item">
+          <div>
+            <div class="kicker">
+              <Status status={w.data.status} />
+              <span class="label">{w.data.kind} · {w.data.period.split(" · ")[0]}</span>
+            </div>
+            <h2>
+              <a href={url(`work/${w.id}/`)}>{w.data.title}</a>
+            </h2>
+            <p class="project">{w.data.project}</p>
+            <p class="summary">{w.data.summary}</p>
+            <p class="links">
+              <a href={url(`work/${w.id}/`)}>
+                Case study <span class="arrow" aria-hidden="true">→</span>
+              </a>
+              {w.data.links.map((l) => (
+                <a href={l.href}>{l.label} ↗</a>
+              ))}
+            </p>
+          </div>
+          <div class="side">
+            {w.data.metrics.length > 0
+              ? w.data.metrics.slice(0, 2).map((m) => (
+                  <div class="mini-metric">
+                    <span class="value">{m.value}</span>
+                    <span class="what">{m.label}</span>
+                  </div>
+                ))
+              : w.data.proof.slice(0, 2).map((p) => (
+                  <div class="mini-metric">
+                    <span class="value" style="font-size: 1rem;">{p}</span>
+                  </div>
+                ))}
+          </div>
+        </li>
+      ))
+    }
+  </ol>
+
+  <p class="also">
+    Also built: the same expense tracker twice, once as a cloud web app with Google sign-in and
+    row-level security (<a href="https://expense-tracker-ten-jet-82.vercel.app">live ↗</a>), and once
+    as an offline-first mobile app with its own SQLite migrations (<a
+      href="https://github.com/labdhishahp/project-expense-mobile">code ↗</a
+    >).
+  </p>
+</Base>

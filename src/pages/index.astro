@@ -1,0 +1,76 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../layouts/Base.astro";
+import { site, url } from "../site";
+
+const work = (await getCollection("work")).sort((a, b) => a.data.order - b.data.order);
+const ka = work.find((w) => w.id === "knowledge-assistant");
+---
+
+<Base>
+  <section class="hero" aria-labelledby="intro">
+    <span class="label">AI &amp; Data Science · Mumbai · Graduating July 2027</span>
+    <h1 id="intro">I’m interested in what happens after you call the model.</h1>
+    <p class="bio">
+      I’m Labdhi, a final-year engineering student. Most of what I build sits after the model call:{" "}
+      <strong>evidence gates, citation checks, policy code, human approval</strong>, and the
+      evaluations that tell me whether any of it works.
+    </p>
+    <ul class="facts" aria-label="At a glance">
+      <li>
+        <span class="value">Miscot Systems</span>
+        <span class="what">Software Developer Intern · Dec 2025 – Feb 2026</span>
+      </li>
+      <li>
+        <span class="value">2nd of 234 teams</span>
+        <span class="what">IndiaNext national hackathon · Mar 2026</span>
+      </li>
+      <li>
+        <span class="value">0.826 recall@3</span>
+        <span class="what">Knowledge Assistant · live</span>
+      </li>
+    </ul>
+  </section>
+
+  <ul class="routes" aria-label="Explore">
+    <li class="route">
+      <a href={url("journey/")}>Journey <span class="arrow" aria-hidden="true">→</span></a>
+      <p class="promise">
+        TCET, S4DS, Miscot, IndiaNext and what I’m building now. What each step changed, how I think
+        about engineering, and who I am outside it.
+      </p>
+    </li>
+    <li class="route">
+      <a href={url("work/")}>Work <span class="arrow" aria-hidden="true">→</span></a>
+      <div>
+        <p class="promise">Four systems, each told as the problem and the decisions behind it.</p>
+        <ul class="route-work">
+          {
+            work.map((w) => (
+              <li>
+                <a href={url(`work/${w.id}/`)}>
+                  <span>
+                    <span class="t">{w.data.title}</span>
+                    <br />
+                    <span class="p">{w.data.project}</span>
+                  </span>
+                  <span class="tag">
+                    {w.data.proof[0]} · {w.data.status === "In development" ? "in development" : w.data.status === "Live" ? "live" : w.data.kind.toLowerCase()}
+                  </span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </li>
+    <li class="route">
+      <a href={url("writing/")}>Writing <span class="arrow" aria-hidden="true">→</span></a>
+      <p class="promise">Notes from building, published when there’s something worth explaining.</p>
+    </li>
+    <li class="route">
+      <a href={url(site.resume)}>Résumé <span class="arrow" aria-hidden="true">→</span></a>
+      <p class="promise">The one-page version, as a PDF.</p>
+    </li>
+  </ul>
+</Base>

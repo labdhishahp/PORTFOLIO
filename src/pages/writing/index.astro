@@ -1,0 +1,42 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import { url } from "../../site";
+
+const posts = (await getCollection("writing")).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const fmt = (d: Date) => d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+---
+
+<Base title="Writing" current="writing" description="Notes by Labdhi Shah, published when there's something worth explaining.">
+  <header class="page-head">
+    <span class="label">Writing</span>
+    <h1>Notes, when there’s something worth explaining.</h1>
+    <p class="lede">Deep dives and short notes from building. No schedule, and no filler.</p>
+  </header>
+
+  {
+    posts.length > 0 ? (
+      <ol class="post-list">
+        {posts.map((p) => (
+          <li>
+            <span class="label">
+              {fmt(p.data.date)} · {p.data.kind}
+            </span>
+            <span>
+              <a href={url(`writing/${p.id}/`)} style="font-weight: 600;">
+                {p.data.title}
+              </a>
+              <br />
+              <span style="color: var(--muted);">{p.data.summary}</span>
+            </span>
+          </li>
+        ))}
+      </ol>
+    ) : (
+      <p class="empty">
+        Nothing published yet. I’d rather post one note worth reading than fill this page to look
+        complete. Until then, the <a href={url("work/")}>work pages</a> are the long version.
+      </p>
+    )
+  }
+</Base>
