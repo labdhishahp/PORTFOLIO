@@ -2,23 +2,23 @@
 order: 3
 project: "Document intelligence · Miscot Systems"
 title: "OCR is a pipeline, not a model"
-summary: "During my internship I worked on turning uploaded documents into structured data: preprocessing, staged detection and recognition, masking sensitive fields, and exposing it all through FastAPI."
+summary: "During my internship I built an OCR pipeline for printed documents, benchmarked it against DocTR, added field detection and Aadhaar masking, and exposed it all to other services through FastAPI."
 kind: Internship
 period: "Dec 2025 – Feb 2026 · Mumbai"
 ownership: "Software Developer Intern, Python team — image processing and OCR pipeline, backend integration"
 status: Internship
 proof:
-  - YOLO → DBNet → PARSeq
+  - PaddleOCR (DBNet + PARSeq)
+  - benchmarked against DocTR
   - Aadhaar masking
-  - FastAPI
 tldr:
   - "Problem: take an uploaded document, find the fields that matter, read them reliably, and never expose sensitive data on the way."
-  - "My part: image preprocessing and the OCR pipeline, Aadhaar masking, signature extraction, and wiring it into FastAPI."
+  - "My part: the OCR pipeline and its preprocessing, a benchmark against DocTR, YOLO field detection, Aadhaar masking, signature cropping, FastAPI endpoints, and a retrieval chatbot."
   - "Lesson: building an AI feature isn’t just choosing a model; most of the work is around it."
 metrics: []
 pipeline:
   - { step: Upload, kind: step }
-  - { step: Preprocess, kind: step }
+  - { step: Preprocess, kind: step, note: denoise · binarize · normalise }
   - { step: Locate fields, kind: model, note: YOLO }
   - { step: Detect text, kind: model, note: DBNet }
   - { step: Recognise text, kind: model, note: PARSeq }
@@ -28,6 +28,7 @@ pipelineCaption: "Each stage is its own model or step, not one black box."
 stack:
   - Python
   - FastAPI
+  - PaddleOCR
   - YOLO
   - DBNet
   - PARSeq
@@ -46,19 +47,21 @@ My main contribution was on the image-processing and OCR side of that pipeline, 
 
 ### Start with the input
 
-OCR accuracy depends heavily on the image. Real documents arrive at different resolutions, with noise, uneven lighting, skew and inconsistent layouts. I worked on preprocessing the images and checked how each step changed the extracted text.
+OCR accuracy depends heavily on the image. Real documents arrive at different resolutions, with noise, uneven lighting, skew and inconsistent layouts. I tuned the preprocessing (denoising, binarization and normalization) to improve the input quality before anything reached the OCR models.
 
 ### Treat OCR as stages
 
-“Run OCR” is really two problems: finding *where* the text is, and reading *what* it says. We used separate models for each, DBNet to detect text regions and PARSeq to recognise the characters, and YOLO to locate specific fields first where they mattered. I also explored DocTR as an alternative and compared the approaches.
+“Run OCR” is really two problems: finding *where* the text is, and reading *what* it says. I built the pipeline for printed documents on PaddleOCR, with DBNet detecting text regions and PARSeq recognising the characters, then added YOLO-based detection to locate specific fields first.
+
+I didn’t take the stack on faith: I benchmarked the pipeline against DocTR on accuracy and performance.
 
 ### Mask sensitive data before anything else sees it
 
-I worked on Aadhaar masking: once the sensitive region of a document image is identified, it’s masked before the document is processed further. I also worked on extracting specific regions, such as cropping the signature from a particular page, and on how those crops were stored and retrieved.
+I added Aadhaar masking to the pipeline: once the sensitive region of a document image is identified, it’s masked before the document is processed further. I also added signature-region cropping, and handled how those crops were stored and retrieved.
 
 ### Make it callable
 
-Instead of separate Python scripts, I integrated these workflows into FastAPI endpoints, so another part of the application could send a document and get structured JSON back.
+Instead of separate Python scripts, I built FastAPI endpoints that expose the ML and document-processing pipelines to other services: send a document, get structured JSON back.
 
 ### Protect the data with standard tools
 
@@ -66,7 +69,7 @@ I implemented AES-based encryption and decryption, single and batch, so sensitiv
 
 ### Don’t send every question to an LLM
 
-I also worked on a chatbot that looked for relevant information in a knowledge base first, using retrieval, and used an LLM API to generate a response where that made sense.
+I also built a hybrid retrieval chatbot. It started with TF-IDF and fuzzy matching and moved to embedding-based retrieval, with a similarity threshold deciding whether a question gets a rule-based answer or goes to an LLM API.
 
 ## What I took from it
 

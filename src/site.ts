@@ -4,7 +4,7 @@ export const site = {
   name: "Labdhi Shah",
   description:
     "Labdhi Shah — AI & Data Science, Mumbai. I'm interested in what happens after you call the model: grounding, evaluation, and the checks around it.",
-  email: "labdhishah.proffesional@gmail.com",
+  email: "labdhishah102005@gmail.com",
   github: "https://github.com/labdhishahp",
   linkedin: "https://www.linkedin.com/in/labdhishahsp/",
   // Served from /public. Replace public/resume.pdf with the final résumé.

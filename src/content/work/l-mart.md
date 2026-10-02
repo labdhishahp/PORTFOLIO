@@ -36,7 +36,7 @@ pipelineCaption: "The model works in the dashed steps. Everything after its find
 decisions:
   - decision: Data access
     alternatives: Let the model write SQL
-    chose: A registry of typed tools over 11 hand-written SQL metrics
+    chose: One registry of 10 typed tools over 11 hand-written SQL metrics
     evidence: every number traces to a query I can test
   - decision: Business rules
     alternatives: Put the rules in the prompt
@@ -66,6 +66,9 @@ stack:
   - Model Context Protocol
   - Next.js
   - Claude API
+links:
+  - label: Code
+    href: https://github.com/labdhishahp/ai_loyalty
 linkNote: "The live demo will be linked here after the first deployment."
 ---
 
@@ -83,7 +86,7 @@ The model chooses which questions to ask and how to interpret the answers. It ne
 
 ### Tools, not a database
 
-The agent reaches data only through typed tools: validated arguments, a statement timeout on every call, one standard result shape. Behind them are eleven hand-written, versioned SQL metric definitions. Write tools aren’t even shown to the model unless the run is allowed to write. The model can misread a result, but it can’t invent a metric.
+The agent reaches data only through a registry of ten typed tools, built without an agent framework: validated arguments, a statement timeout on every call, one standard result shape. Behind them are eleven hand-written, versioned SQL metric definitions. Write tools aren’t even shown to the model unless the run is allowed to write. The model can misread a result, but it can’t invent a metric.
 
 ### Policy in code, checked twice
 
@@ -110,7 +113,7 @@ To grade an investigation you need the right answer. The data generator plants c
 
 ### Retrieve policy with dates in mind
 
-Policies change, so retrieval filters on country and effective dates first (a withdrawn policy can’t be cited as current), then combines full-text and vector search with reciprocal rank fusion: `0.955` recall@3 on a 22-question set.
+Policies change, so retrieval filters on country and effective dates first (a withdrawn policy can’t be cited as current), then combines full-text and vector search with reciprocal rank fusion. Fixing jurisdiction filtering and capping chunks per document raised recall@3 from `0.727` to `0.955` on a 22-question set.
 
 ### MCP as an adapter
 

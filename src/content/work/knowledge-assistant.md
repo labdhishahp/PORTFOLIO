@@ -122,6 +122,7 @@ The first prototype was Streamlit, FAISS and local sentence-transformers. To dep
 | Retrieval on the gold set | recall@3 `0.826` | The right passage is usually in the top three |
 | Sentence vs recursive chunker | `0.826` vs `0.783` | Chunk shape changes ranking, not just recall |
 | bge-small vs all-MiniLM-L6-v2 | `0.83` vs `0.61` | The embedding model was the biggest single lever |
+| Task routing (answer / summarize / compare) | `15 / 15` | Requests reach the right path without an LLM classifier |
 | Score gap, absent vs answerable | `≤ 0.506` vs `≥ 0.622` | A clean place for the refusal line, apart from one outlier at `0.758` |
 
 The evaluation itself makes no model calls, so it’s cheap to re-run.
